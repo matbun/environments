@@ -8,8 +8,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE
 
 RUN pip install --upgrade pip
 
-USER root
-
 RUN apt update -y \
     && apt install -y build-essential cmake curl voms-clients-java software-properties-common \
     && apt clean -y \
