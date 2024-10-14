@@ -8,11 +8,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE
 
 RUN pip install --upgrade pip
 
-RUN apt update -y \
-    && apt install -y build-essential cmake curl voms-clients-java software-properties-common \
-    && apt clean -y \
-    && rm /opt/conda/bin/voms-proxy-init \
-    && ln -s /usr/bin/voms-proxy-init /opt/conda/bin/voms-proxy-init
+USER root
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake
 
 USER $NB_UID
 
@@ -42,6 +42,12 @@ RUN pip install --no-cache-dir deepspeed git+https://github.com/horovod/horovod.
     pip install --no-cache-dir git+https://github.com/interTwin-eu/itwinai.git
     
 USER root
+
+RUN apt update -y \
+    && apt install -y curl voms-clients-java software-properties-common \
+    && apt clean -y \
+    && rm /opt/conda/bin/voms-proxy-init \
+    && ln -s /usr/bin/voms-proxy-init /opt/conda/bin/voms-proxy-init
 
 # ESCAPE grid-security and VOMS setup
 RUN wget -q -O - https://dist.eugridpma.info/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3 | apt-key add -
