@@ -8,6 +8,14 @@ LABEL org.label-schema.build-date=$BUILD_DATE
 
 RUN pip install --upgrade pip
 
+USER root
+
+RUN apt update -y \
+    && apt install -y build-essential cmake curl voms-clients-java software-properties-common \
+    && apt clean -y \
+    && rm /opt/conda/bin/voms-proxy-init \
+    && ln -s /usr/bin/voms-proxy-init /opt/conda/bin/voms-proxy-init
+
 USER $NB_UID
 
 RUN conda install -y -n base mamba \
@@ -32,16 +40,10 @@ RUN conda install -y -n base mamba \
 RUN pip install rucio-jupyterlab==0.10.0 \
     && jupyter serverextension enable --py rucio_jupyterlab --sys-prefix 
 
-RUN pip install --no-cache-dir deepspeed git+https://github.com/horovod/horovod.git "prov4ml[linux]@git+https://github.com/matbun/ProvML"
-RUN pip install git+https://github.com/interTwin-eu/itwinai.git
+RUN pip install --no-cache-dir deepspeed git+https://github.com/horovod/horovod.git "prov4ml[linux]@git+https://github.com/matbun/ProvML" &&\
+    pip install --no-cache-dir git+https://github.com/interTwin-eu/itwinai.git
     
 USER root
-
-RUN apt update -y \
-    && apt install -y build-essential curl voms-clients-java software-properties-common \
-    && apt clean -y \
-    && rm /opt/conda/bin/voms-proxy-init \
-    && ln -s /usr/bin/voms-proxy-init /opt/conda/bin/voms-proxy-init
 
 # ESCAPE grid-security and VOMS setup
 RUN wget -q -O - https://dist.eugridpma.info/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3 | apt-key add -
