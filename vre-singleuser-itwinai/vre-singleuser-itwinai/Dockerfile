@@ -41,7 +41,19 @@ RUN pip install --no-cache-dir rucio-jupyterlab==0.10.0 \
 
 # Install itwinai
 COPY install_itwinai_torch.sh ./
-RUN env NO_CUDA=1 bash install_itwinai_torch.sh && rm install_itwinai_torch.sh
+RUN env NO_CUDA=1 bash install_itwinai_torch.sh && rm install_itwinai_torch.sh \
+    && pip install --no-cache-dir \
+    cartopy \
+    joblib \
+    lightning \
+    matplotlib \
+    munch \
+    pandas \
+    requests \
+    tqdm \
+    timm \
+    toml \
+    xarray
 # RUN pip install --no-cache-dir deepspeed git+https://github.com/horovod/horovod.git "prov4ml[linux]@git+https://github.com/matbun/ProvML" &&\
 #     pip install --no-cache-dir git+https://github.com/interTwin-eu/itwinai.git
 
